@@ -1,3 +1,8 @@
 library(testthat)
 library(modisfast)
-test_check("modisfast")
+
+
+if (exists("earthdata_un") & exists("earthdata_pw")){
+   test_check("modisfast")
+}
+

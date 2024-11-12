@@ -10,7 +10,7 @@ mf_download_data(
   parallel = FALSE,
   num_workers = parallel::detectCores() - 1,
   credentials = NULL,
-  verbose = TRUE,
+  verbose = "inform",
   min_filesize = 5000
 )
 }
@@ -25,7 +25,7 @@ mf_download_data(
 
 \item{credentials}{vector string of length 2 with username and password. optional if the function \link{mf_login} was previously executed.}
 
-\item{verbose}{boolean. optional. Verbose (default TRUE)}
+\item{verbose}{string. Verbose mode ("quiet", "inform", or "debug"). Default "inform".}
 
 \item{min_filesize}{integer. Minimum file size expected (in bites) for one file downloaded. If files downloaded are less that this value, the files will be downloaded again. Default 5000.}
 }
@@ -34,7 +34,7 @@ a data.frame with the same structure of the input data.frame \code{df_to_dl} + c
 \describe{
 \item{fileDl}{Booloean (dataset downloaded or failure)}
 \item{dlStatus}{Download status : 1 = download ok ; 2 = download error ; 3 = dataset was already existing in destination file }
-\item{fileSize}{File size on disk}
+\item{fileSize}{File size on disk (in bites)}
 }
 }
 \description{
@@ -52,30 +52,32 @@ Parameter \code{df_to_dl} must be a data.frame with the following minimal struct
 }
 }
 \examples{
-
 \dontrun{
 
 ### Login to EOSDIS Earthdata with your username and password
-log <- mf_login(credentials = c("earthdata_un","earthdata_pw"))
+log <- mf_login(credentials = c("earthdata_un", "earthdata_pw"))
 
 ### Set-up parameters of interest
 coll <- "MOD11A1.061"
 
-bands <- c("LST_Day_1km","LST_Night_1km")
+bands <- c("LST_Day_1km", "LST_Night_1km")
 
-time_range <- as.Date(c("2017-01-01","2017-01-30"))
+time_range <- as.Date(c("2017-01-01", "2017-01-30"))
 
-roi <- sf::st_as_sf(data.frame(
-id = "roi_test",
-geom="POLYGON ((-5.82 9.54, -5.42 9.55, -5.41 8.84, -5.81 8.84, -5.82 9.54))"),
-wkt="geom",crs = 4326)
+roi <- sf::st_as_sf(
+  data.frame(
+    id = "roi_test",
+    geom = "POLYGON ((-5.82 9.54, -5.42 9.55, -5.41 8.84, -5.81 8.84, -5.82 9.54))"
+  ),
+  wkt = "geom", crs = 4326
+)
 
 ### Get the URLs of the data
 (urls_mod11a1 <- mf_get_url(
-collection = coll,
-variables = bands,
-roi = roi,
-time_range = time_range
+  collection = coll,
+  variables = bands,
+  roi = roi,
+  time_range = time_range
 ))
 
 ### Download the data
@@ -86,6 +88,5 @@ modis_ts <- mf_import_data(dirname(res_dl$destfile[1]), collection = coll)
 
 ### Plot the data
 terra::plot(modis_ts)
-
 }
 }

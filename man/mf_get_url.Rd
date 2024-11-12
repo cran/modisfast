@@ -13,7 +13,7 @@ mf_get_url(
   single_netcdf = TRUE,
   opt_param = NULL,
   credentials = NULL,
-  verbose = TRUE
+  verbose = "inform"
 )
 }
 \arguments{
@@ -33,7 +33,7 @@ mf_get_url(
 
 \item{credentials}{vector string of length 2 with username and password. optional if the function \link{mf_login} was previously executed.}
 
-\item{verbose}{boolean. optional. Verbose (default TRUE)}
+\item{verbose}{string. Verbose mode ("quiet", "inform", or "debug"). Default "inform".}
 }
 \value{
 a data.frame with one row for each dataset to download and 5 columns :
@@ -43,17 +43,19 @@ a data.frame with one row for each dataset to download and 5 columns :
  \item{collection}{Name of the collection}
  \item{name}{Indicative name for the dataset}
  \item{url}{https OPeNDAP URL of the dataset}
+ \item{maxFileSizeEstimated}{Maximum estimated data size for the dataset (in bites)}
  }
 }
 \description{
-Builds the OPeNDAP URL(s) of the spatiotemporal datacube to download, given a collection, variables, region and time range of interest.
+Builds the OPeNDAP URL(s) of the spatiotemporal datacube to
+download, given a collection, variables, region and time range of interest.
 }
 \details{
 Argument \code{collection} : Collections available can be retrieved with the function \link{mf_list_collections}
 
 Argument \code{variables} : For each collection, variables available can be retrieved with the function \link{mf_list_variables}
 
-Argument \code{time_range} : Can be provided either as i) a single date (e.g. \code{as.Date("2017-01-01"))} or ii) a time frame provided as two bounding dates (starting and ending time) ( e.g. \code{as.Date(c("2010-01-01","2010-01-30"))}) or iii) a POSIXlt single time (e.g. \code{as.POSIXlt("2010-01-01 18:00:00")}) or iv) a POSIXlt time range (e.g. \code{as.POSIXlt(c("2010-01-01 18:00:00","2010-01-02 09:00:00"))}) for the half-hourly collection (GPM_3IMERGHH.06). If POSIXlt, times must be in UTC.
+Argument \code{time_range} : Can be provided either as i) a single date (e.g. \code{as.Date("2017-01-01"))} or ii) a time frame provided as two bounding dates (starting and ending time) ( e.g. \code{as.Date(c("2010-01-01","2010-01-30"))}) or iii) a POSIXlt single time (e.g. \code{as.POSIXlt("2010-01-01 18:00:00")}) or iv) a POSIXlt time range (e.g. \code{as.POSIXlt(c("2010-01-01 18:00:00","2010-01-02 09:00:00"))}) for the half-hourly collection (GPM_3IMERGHH.06). If POSIXlt, hours must be provided in GMT.
 
 Argument \code{single_netcdf} : for MODIS and VIIRS products from LP DAAC: download the data as a single file encompassing the whole time frame (TRUE) or as multiple files : one for each date, which is the behavious for the other collections - GPM and SMAP) (FALSE) ?
 
@@ -63,14 +65,13 @@ It might be particularly useful to precompute it with \link{mf_get_opt_param} in
 Argument \code{credentials} : Login to the OPeNDAP servers is required to use the function. Login can be done either within the function or outside with the function \link{mf_login}
 }
 \examples{
-
 \dontrun{
 
 ### First login to EOSDIS Earthdata with username and password.
 # To create an account go to : https://urs.earthdata.nasa.gov/.
 username <- "earthdata_un"
 password <- "earthdata_pw"
-log <- mf_login(credentials = c(username,password))
+log <- mf_login(credentials = c(username, password))
 
 ### Get the URLs to download the following datasets :
 # MODIS Terra LST Daily (MOD11A1.061) (collection)
@@ -78,18 +79,21 @@ log <- mf_login(credentials = c(username,password))
 # over a 50km x 70km region of interest (roi)
 # for the time frame 2017-01-01 to 2017-01-30 (30 days) (time_range)
 
-roi <- sf::st_as_sf(data.frame(
-id = "roi_test",
-geom="POLYGON ((-5.82 9.54, -5.42 9.55, -5.41 8.84, -5.81 8.84, -5.82 9.54))"),
-wkt="geom",crs = 4326)
+roi <- sf::st_as_sf(
+  data.frame(
+    id = "roi_test",
+    geom = "POLYGON ((-5.82 9.54, -5.42 9.55, -5.41 8.84, -5.81 8.84, -5.82 9.54))"
+  ),
+  wkt = "geom", crs = 4326
+)
 
-time_range = as.Date(c("2017-01-01","2017-01-30"))
+time_range <- as.Date(c("2017-01-01", "2017-01-30"))
 
 (urls_mod11a1 <- mf_get_url(
-collection = "MOD11A1.061",
-variables = c("LST_Day_1km","LST_Night_1km"),
-roi = roi,
-time_range = time_range
+  collection = "MOD11A1.061",
+  variables = c("LST_Day_1km", "LST_Night_1km"),
+  roi = roi,
+  time_range = time_range
 ))
 
 ## Download the data :

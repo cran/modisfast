@@ -1,6 +1,6 @@
 Package: modisfast
 Title: Fast and Efficient Access to MODIS Earth Observation Data
-Version: 0.9.1
+Version: 1.0.0
 Authors@R: 
     c(person(given = "Paul", 
     family = "Taconet",
@@ -19,18 +19,21 @@ URL: https://github.com/ptaconet/modisfast
 BugReports: https://github.com/ptaconet/modisfast/issues
 Depends: R (>= 2.10)
 Imports: curl, dplyr, httr, lubridate, magrittr, parallel, purrr,
-        rvest, sf, stats, stringr, terra, xml2
-Suggests: ggplot2, knitr, mapview, rmarkdown, spelling, testthat
+        rvest, sf, stats, stringr, terra, xml2, cli
+Suggests: ggplot2, knitr, mapview, rmarkdown, spelling, testthat,
+        appeears
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.3.1
 Language: en-US
+Config/testthat/start-first: mf_login, mf_list_collections,
+        mf_list_variables, mf_get_url, mf_download_data, mf_import_data
 NeedsCompilation: no
-Packaged: 2024-07-12 12:08:40 UTC; ptaconet
+Packaged: 2024-11-12 14:23:19 UTC; ptaconet
 Author: Paul Taconet [aut, cre, cph] (<https://orcid.org/0000-0001-7429-7204>),
   Nicolas Moiroux [fnd] (<https://orcid.org/0000-0001-6755-6167>),
   French National Research Institute for Sustainable Development, IRD
     [fnd]
 Maintainer: Paul Taconet <paul.taconet@gmail.com>
 Repository: CRAN
-Date/Publication: 2024-07-14 12:10:02 UTC
+Date/Publication: 2024-11-12 15:00:02 UTC

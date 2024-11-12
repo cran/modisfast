@@ -4,12 +4,12 @@
 \alias{mf_login}
 \title{Login to EOSDIS EarthData account}
 \usage{
-mf_login(credentials, verbose = TRUE)
+mf_login(credentials, verbose = "inform")
 }
 \arguments{
 \item{credentials}{vector string of length 2 with username and password. optional if the function \link{mf_login} was previously executed.}
 
-\item{verbose}{boolean. optional. Verbose (default TRUE)}
+\item{verbose}{string. Verbose mode ("quiet", "inform", or "debug"). Default "inform".}
 }
 \value{
 None.
@@ -18,14 +18,13 @@ None.
 Login to EOSDIS EarthData before querying servers and download data
 }
 \details{
-An EOSDIS EarthDataaccount is mandatory to download the data. You can create a free account here : \url{https://urs.earthdata.nasa.gov/}.
+An EOSDIS EarthData account is mandatory to download the data. You can create a free account here : \url{https://urs.earthdata.nasa.gov/}.
 }
 \examples{
-
 \dontrun{
 username <- "earthdata_un"
 password <- "earthdata_pw"
-mf_login(credentials = c(username,password))
+mf_login(credentials = c(username, password))
 }
 
 }
